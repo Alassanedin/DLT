@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h3 class="text-success" style="font-size: 2rem;">✅ Document archivé avec succès</h3>
+    <hr>
+    <p><b>Nom du fichier :</b> {{ filename }}</p>
+    <p><b>Hash SHA-256 :</b> {{ doc_hash }}</p>
+    <p><b>Topic ID :</b> <span style="font-weight: bold; color: var(--primary);">{{ topic_id }}</span></p>
+    <p><b>Horodatage (Hedera Mock) :</b> {{ timestamp }}</p>
+    <hr>
+    <a href="{{ url_for('index') }}" class="btn-app btn-app-secondary">Retour au Tableau de Bord</a>
+  </div>
+</div>
+{% endblock %}

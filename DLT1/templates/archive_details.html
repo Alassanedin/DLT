@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-title">
+    <h2>Détails de l'Archive</h2>
+    <p>Informations complètes sur l'archive et son historique de vérification.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0 text-primary">Informations Clés de l'Archive</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Fichier Archivé:</strong> {{ archive.nom_fichier_local }} ({{ archive.type_fichier }})</p>
+                <p><strong>Taille:</strong> {{ archive.taille_fichier }}</p>
+                <p><strong>Archivé par:</strong> {{ archive.archiveur }}</p>
+                <hr>
+                <h5>Topic ID (Hedera Mock)</h5>
+                <code class="form-control text-info">{{ archive.topic_id }}</code>
+                <p class="small text-muted mt-1">Identifiant unique sur le ledger simulé.</p>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0 text-dark">Informations du Ledger (Preuve)</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Date d'Archivage:</strong> {{ archive.stored_timestamp }}</p>
+                <p><strong>Nom du Fichier (au moment de l'archivage):</strong> {{ archive.stored_filename }}</p>
+                <h5>Hash SHA-256 Enregistré</h5>
+                <code class="form-control text-success">{{ archive.stored_hash }}</code>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            {% if download_available %}
+                <a href="{{ url_for('telecharger_document', download_hash=archive.topic_id) }}" class="btn btn-app-primary">
+                    <i class="fas fa-download"></i> Télécharger le Fichier Original
+                </a>
+            {% else %}
+                <button class="btn btn-app-secondary" disabled>Fichier original non disponible sur le serveur</button>
+                <p class="text-danger small mt-2">Seule la preuve d'archivage sur le ledger persiste.</p>
+            {% endif %}
+            
+            <a href="{{ url_for('verifier', topic_id=archive.topic_id) }}" class="btn btn-app-success ms-3">
+                 <i class="fas fa-check"></i> Re-vérifier l'Archive
+            </a>
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0 text-secondary">Historique des Vérifications ({{ verifications|length }})</h4>
+            </div>
+            <div class="card-body">
+                {% if verifications %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Résultat</th>
+                                <th>Hash Vérifié</th>
+                                <th>Par</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for verif in verifications %}
+                            <tr>
+                                <td>{{ verif.horodatage }}</td>
+                                <td>
+                                    {% if verif.est_valide %}
+                                        <span class="badge bg-success">OK</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Échec</span>
+                                    {% endif %}
+                                </td>
+                                <td title="{{ verif.hash_document_verifie }}">{{ verif.hash_document_verifie[:15] }}...</td>
+                                <td>{{ verif.verifie_par }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-3">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucune vérification enregistrée pour cette archive.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

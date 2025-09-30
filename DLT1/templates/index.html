@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-title">
+    <h2>Tableau de Bord de l'Archivage</h2>
+    <p>Gérez vos documents et archives numériques sur le réseau simulé Hedera.</p>
+</div>
+
+<div class="app-form-section">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Archiver un document</h3>
+            <p class="text-muted small">Le hash SHA-256 du document sera soumis au ledger.</p>
+            <form method="post" action="{{ url_for('archiver') }}" enctype="multipart/form-data">
+                <label>Sélectionnez un Fichier:</label>
+                <input type="file" name="document" class="form-control" required>
+                <button type="submit" class="btn-app btn-app-primary">Archiver sur Hedera Mock</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Vérifier un document</h3>
+            <p class="text-muted small">Entrez le Topic ID. Le fichier est facultatif pour la recherche d'archive.</p>
+            <form method="post" action="{{ url_for('verifier') }}" enctype="multipart/form-data">
+                <label>Document (Facultatif):</label>
+                <input type="file" name="document" class="form-control"> 
+                
+                <label>Topic ID (Obligatoire):</label>
+                <input type="text" name="topic_id" placeholder="Ex: 0.0.123456" class="form-control" required> 
+                
+                <button type="submit" class="btn-app btn-app-success">Vérifier / Trouver l'Archive</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

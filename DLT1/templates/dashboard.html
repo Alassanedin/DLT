@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Styles pour les cartes de statistiques */
+    .stats-card {
+        text-align: center;
+        padding: 20px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    .stats-card i {
+        color: var(--primary); /* Utilise la couleur primaire de votre base.html */
+    }
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--dark);
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .stats-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    /* Surcharge si nécessaire pour aligner le texte blanc du titre */
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    .h2.text-white {
+        color: white !important;
+    }
+    /* Styles pour l'historique */
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .card-header {
+        border-bottom: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h2 text-white">
+            <i class="fas fa-chart-bar me-2"></i>Tableau de Bord
+        </h1>
+        <p class="text-white-50">Statistiques et historique des archives</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card bg-white">
+            <i class="fas fa-archive fa-2x text-primary mb-2"></i>
+            <div class="stats-number">{{ stats.total_archives }}</div>
+            <div class="stats-label">Documents Archivés</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-white">
+            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+            <div class="stats-number">{{ stats.verifications_ok }}</div>
+            <div class="stats-label">Vérifications OK</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-white">
+            <i class="fas fa-search fa-2x text-info mb-2"></i>
+            <div class="stats-number">{{ stats.total_verifications }}</div>
+            <div class="stats-label">Total Vérifications</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-white">
+            <i class="fas fa-bolt fa-2x text-warning mb-2"></i>
+            <div class="stats-number">100%</div>
+            <div class="stats-label">Disponibilité</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">
+            <i class="fas fa-history me-2"></i>Historique des Archives
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if archives %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nom du Fichier</th>
+                        <th>Type</th>
+                        <th>Taille</th>
+                        <th>Topic ID</th>
+                        <th>Date d'Archivage</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for archive in archives %}
+                    <tr>
+                        <td>{{ archive.nom_fichier }}</td>
+                        <td><span class="badge bg-secondary">{{ archive.type_fichier|upper }}</span></td>
+                        <td>{{ (archive.taille_fichier / 1024)|round(2) }} KB</td>
+                        <td><code>{{ archive.topic_id }}</code></td>
+                        <td>{{ archive.horodatage }}</td>
+                        <td>
+                            <a href="{{ url_for('verifier', topic_id=archive.topic_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Aucune archive pour le moment</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Archiver un document</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

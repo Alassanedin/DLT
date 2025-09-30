@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    {% if valide %}
+      <h3 class="text-success" style="font-size: 2rem;">✅ Authentique / Archive Trouvée</h3>
+    {% else %}
+      <h3 class="text-danger" style="font-size: 2rem;">❌ Invalide / Topic ID Inconnu</h3>
+    {% endif %}
+    
+    <p><b>Topic ID recherché :</b> {{ topic_id }}</p>
+
+    {% if doc_hash %}
+      <hr>
+      <p><b>Nom du fichier :</b> {{ filename if filename else 'Information non fournie' }}</p>
+      <p><b>Hash SHA-256 :</b> {{ doc_hash }}</p>
+      <p><b>Horodatage (Hedera Mock) :</b> {{ timestamp if timestamp else 'Non trouvé' }}</p>
+    {% endif %}
+
+    {% if valide and download_hash %}
+      <hr>
+      <p class="mb-3">
+        Le document archivé correspondant au Topic ID est **valide** et est disponible au téléchargement.
+      </p>
+      <a href="{{ url_for('telecharger_document', download_hash=download_hash) }}" class="btn-app btn-app-primary">
+        ⬇️ Télécharger le Document Archivé ({{ filename }})
+      </a>
+    {% endif %}
+
+    <hr>
+    <a href="{{ url_for('index') }}" class="btn-app btn-app-secondary">Retour au Tableau de Bord</a>
+  </div>
+</div>
+{% endblock %}
